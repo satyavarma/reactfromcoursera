@@ -17,7 +17,7 @@ function RenderDish({dish}){
     );
 }
 
-function RenderComments({commentDetail}){
+function RenderComments({commentDetail, addComment, dishId}){
     return(
         <div className='list-unstyled'>
             <li className='mt-3'>{commentDetail.comment}</li>
@@ -30,7 +30,7 @@ const Dishdetail = (props) => {
     if(props.dish !== undefined || props.dish !== null){
         const commentsdata = props.comments.map((commentDetail) => {
             return(
-                <RenderComments commentDetail={commentDetail} />
+                <RenderComments commentDetail={commentDetail} addComment={props.addComment} dishId={props.dish.id} />
             );
         }); 
         return(
@@ -53,7 +53,7 @@ const Dishdetail = (props) => {
                     <div className='col-12 col-md-5 m-1'>
                         <h5>Comments</h5>
                         {commentsdata}
-                        <CommentForm />
+                        <CommentForm dishId={props.dish.id} addComment={props.addComment} />
                     </div>
                 </div>
             </div>
@@ -91,8 +91,7 @@ class CommentForm extends Component{
     }
 
     handleSubmit(values) {
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render(){
@@ -121,8 +120,8 @@ class CommentForm extends Component{
                             </Row>
                             <Row className="form-group">
                                 <Col md={12}>
-                                    <Label htmlFor="YourName">YourName</Label>
-                                    <Control.text model=".yourName" id="yourName" name="yourName"
+                                    <Label htmlFor="author">YourName</Label>
+                                    <Control.text model=".author" id="author" name="author"
                                         placeholder="Your Name"
                                         className="form-control"
                                         validators={{
@@ -131,7 +130,7 @@ class CommentForm extends Component{
                                         />
                                     <Errors
                                         className="text-danger"
-                                        model=".yourName"
+                                        model=".author"
                                         show="touched"
                                         messages={{
                                             minLength: 'Must be greater than 2 numbers',
